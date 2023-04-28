@@ -5,10 +5,21 @@
   "manifest_version": 3,
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "bookmarks"
   ],
-  "action": {},
+  "action": {
+  },
   "background": {
     "service_worker": "background.js"
+  },
+  "commands": {
+    "open-grapple-overlay": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "MacCtrl+Shift+F"
+      },
+      "description": "Open the Grapple overlay"
+    }
   }
 }

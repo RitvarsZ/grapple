@@ -1,15 +1,17 @@
-let active = false;
+import { showGrappleOverlay } from "./overlay";
+chrome.commands.onCommand.addListener((command) => {
+  if (command === "open-grapple-overlay") {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      const activeTab = tabs[0];
 
-function makeOrange(color: string): void {
-  document.body.style.backgroundColor = color;
-}
+      if (activeTab.id === undefined) {
+        return
+      }
 
-chrome.action.onClicked.addListener((tab) => {
-  active = !active;
-  const color = active ? 'orange' : 'white';
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id ? tab.id : -1 },
-    func: makeOrange,
-    args: [color]
-  }).then();
+      chrome.scripting.executeScript({
+        target: { tabId: activeTab.id },
+        func: showGrappleOverlay,
+      });
+    });
+  }
 });
