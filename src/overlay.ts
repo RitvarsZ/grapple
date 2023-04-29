@@ -29,6 +29,7 @@ const toggleOverlay = () => {
   }
 
   overlay.classList.add('grapple-container--active');
+  backgroundPort.postMessage(new GrappleEvent(GrappleEventTypes.Search, ''));
   searchBox.focus();
 }
 
@@ -70,6 +71,7 @@ document.addEventListener('keydown', (event) => {
   switch (event.key) {
     case 'Escape':
       toggleOverlay();
+      searchBox.value = '';
       break;
     case 'Enter':
       if (results[0]) {
