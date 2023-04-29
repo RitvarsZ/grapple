@@ -1,4 +1,5 @@
 type BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
+import fuzzysort from "fuzzysort";
 
 export interface Bookmark {
   fullTitle: string;
@@ -18,21 +19,31 @@ export default class Grapple {
   }
 
   public search(query: string): Bookmark[] {
-    return this.bookmarks.filter((bookmark) => {
-      return bookmark.fullTitle.toLowerCase().includes(query.toLowerCase());
-    });
+    const result = fuzzysort.go(query, this.bookmarks, {
+      key: ['fullTitle'],
+      all: true,
+      limit: 25,
+    })
+
+    return result.map((r) => {
+      const highlight = fuzzysort.highlight(r, '<b>', '</b>')
+      return {
+        ...r.obj,
+        title: highlight?.split(' / ').pop() || r.obj.title,
+        folder: highlight?.split(' / ').slice(0, -1).join(' / ') || r.obj.folder,
+      } as Bookmark
+    })
   }
 
   private loadBookmarks(): void {
     chrome.bookmarks.getTree().then((tree) => {
-      console.log(tree)
       const flatten = (node: BookmarkTreeNode, acc: Bookmark[] = [], parentTitle: string = '') => {
         if (node.url) {
           acc.push({
-            fullTitle: `${parentTitle} / ${node.title}`,
             title: node.title,
             url: node.url,
             folder: parentTitle,
+            fullTitle: parentTitle ? `${parentTitle} / ${node.title}` : node.title,
           } as Bookmark);
         }
 
