@@ -22,6 +22,12 @@ chrome.runtime.onConnect.addListener((port) => {
         break;
     }
   })
+
+  port.onDisconnect.addListener(() => {
+    if (port.sender?.tab?.id === undefined) return;
+
+    delete ports[port.sender?.tab?.id];
+  })
 });
 
 chrome.commands.onCommand.addListener((command, tab) => {
