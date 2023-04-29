@@ -1,7 +1,8 @@
 import GrappleEvent, { GrappleEventTypes } from "./event";
+import { Bookmark } from "./grapple";
 
 const backgroundPort = chrome.runtime.connect({ name: 'grapple-port' });
-var results: chrome.bookmarks.BookmarkTreeNode[] = [];
+var results: Bookmark[] = [];
 
 backgroundPort.onMessage.addListener((m: GrappleEvent) => {
   switch (m.type) {
@@ -40,11 +41,14 @@ const renderBookmarks = () => {
     const bookmarkElement = document.createElement('div');
     bookmarkElement.classList.add('grapple-result');
     const favicon = new URL(chrome.runtime.getURL("/_favicon/"));
-    favicon.searchParams.set("pageUrl", result.url || '');
+    favicon.searchParams.set("pageUrl", result.url);
     favicon.searchParams.set("size", "32");
     bookmarkElement.innerHTML = `
-      <img src="${favicon.toString()}" />
-      <span>${result.title}</span>
+      <img src="${favicon.toString()}" alt="" />
+      <div>
+        <div class="title">${result.title}</div>
+        <div class="folder">${result.folder}</div>
+      </div>
     `;
     searchResults.appendChild(bookmarkElement);
   });

@@ -67,8 +67,17 @@
   align-items: center;
 }
 
-.grapple-result > span {
+.grapple-result > div {
+  overflow: hidden
+}
+
+.grapple-result .title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.grapple-result .folder {
+  font-size: 0.75rem;
+  color: rgb(200, 200, 200);
 }
