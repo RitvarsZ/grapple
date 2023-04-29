@@ -18,17 +18,17 @@ backgroundPort.onMessage.addListener((m: GrappleEvent) => {
 });
 
 const toggleOverlay = () => {
-  const overlay = document.querySelector('.grapple-container')
+  const overlay = document.querySelector('[grapple-container]')
 
   if (!(overlay instanceof HTMLElement)) return
 
-  if (overlay.classList.contains('grapple-container--active')) {
-    overlay.classList.remove('grapple-container--active');
+  if(overlay.dataset.grappleVisible === 'true') {
+    overlay.dataset.grappleVisible = 'false';
 
     return
   }
 
-  overlay.classList.add('grapple-container--active');
+  overlay.dataset.grappleVisible = 'true';
   backgroundPort.postMessage(new GrappleEvent(GrappleEventTypes.Search, ''));
   searchBox.focus();
 }
@@ -61,13 +61,16 @@ const template = `
 
 
 var overlay = document.createElement('div');
+overlay.attributes.setNamedItem(document.createAttribute('grapple-container'));
 overlay.classList.add('grapple-container');
 overlay.innerHTML = template;
-
 var searchBox = overlay.querySelector('#grapple-input') as HTMLInputElement;
 var searchResults = overlay.querySelector('.grapple-search-results') as HTMLDivElement;
 
 document.addEventListener('keydown', (event) => {
+  const overlay = document.querySelector('[grapple-container]') as HTMLElement;
+  if (overlay.dataset.grappleVisible === undefined || overlay.dataset.grappleVisible === 'false') return;
+
   switch (event.key) {
     case 'Escape':
       toggleOverlay();
