@@ -1,0 +1,34 @@
+.grapple-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  align-content: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 9999;
+  display: none;
+}
+
+.grapple-container.grapple-container--active {
+  display: flex;
+}
+
+.grapple-search-box {
+  color: white;
+  border-bottom: 2px solid white;
+}
+.grapple-search-box > input {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  width: 100%;
+  outline: none;
+}
+
+.grapple-search-results {
+  color: white;
+}

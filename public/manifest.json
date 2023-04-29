@@ -6,10 +6,19 @@
   "permissions": [
     "activeTab",
     "scripting",
-    "bookmarks"
+    "bookmarks",
+    "favicon"
   ],
   "action": {
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["overlay.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_end"
+    }
+  ],
   "background": {
     "service_worker": "background.js"
   },
@@ -21,5 +30,12 @@
       },
       "description": "Open the Grapple overlay"
     }
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["_favicon/*"],
+      "matches": ["<all_urls>"],
+      "extension_ids": ["*"]
+    }
+  ]
 }
