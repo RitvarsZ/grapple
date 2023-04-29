@@ -1,6 +1,12 @@
 import GrappleEvent, { GrappleEventTypes } from "./event";
 import { Bookmark } from "./grapple";
 
+// inject styles from overlay.css
+const style = document.createElement('link');
+style.rel = 'stylesheet';
+style.href = chrome.runtime.getURL('overlay.css');
+document.head.appendChild(style);
+
 const backgroundPort = chrome.runtime.connect({ name: 'grapple-port' });
 var results: Bookmark[] = [];
 
@@ -51,13 +57,17 @@ const renderBookmarks = () => {
       </div>
     `;
     searchResults.appendChild(bookmarkElement);
+    bookmarkElement.addEventListener('click', () => {
+      backgroundPort.postMessage(new GrappleEvent(GrappleEventTypes.Navigate, result));
+      toggleOverlay();
+    });
   });
 }
 
 const template = `
   <div class="grapple-overlay">
     <div class="grapple-search-box">
-      <input type="text" id="grapple-input" />
+      <input type="text" name="grapple-search" id="grapple-input" title="search" />
     </div>
 
     <div class="grapple-search-results"/>

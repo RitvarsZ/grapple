@@ -15,7 +15,6 @@
     {
       "matches": ["<all_urls>"],
       "js": ["overlay.js"],
-      "css": ["overlay.css"],
       "run_at": "document_end"
     }
   ],
@@ -33,7 +32,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["_favicon/*"],
+      "resources": ["_favicon/*", "overlay.css"],
       "matches": ["<all_urls>"],
       "extension_ids": ["*"]
     }

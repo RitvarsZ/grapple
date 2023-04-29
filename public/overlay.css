@@ -32,15 +32,15 @@
 .grapple-search-box {
   color: white;
   border-bottom: 2px solid white;
-  margin-bottom: 1rem;
+  margin-bottom: 1em;
 }
 
-.grapple-search-box > input {
+input#grapple-input {
   background: transparent;
   border: none;
   color: white;
-  font-size: 1.5rem;
-  padding: 0.5rem;
+  font-size: 1.5em;
+  padding: 0.5em;
   width: 100%;
   outline: none;
 }
@@ -63,8 +63,20 @@
 .grapple-result {
   display: flex;
   flex-wrap: nowrap;
-  gap: 1rem;
+  gap: 1em;
   align-items: center;
+  border-radius: 5px;
+  padding: 3px 5px;
+  margin-bottom: 2px;
+}
+
+.grapple-result b {
+  font-weight: 600;
+}
+
+.grapple-result:hover {
+  background: #3c3c3c;
+  cursor: pointer;
 }
 
 .grapple-result > div {
@@ -78,6 +90,6 @@
 }
 
 .grapple-result .folder {
-  font-size: 0.75rem;
+  font-size: 0.75em;
   color: rgb(200, 200, 200);
 }
