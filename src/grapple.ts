@@ -25,12 +25,19 @@ export default class Grapple {
       limit: 25,
     })
 
+    // Workaround with fuzzysort using { all: true } - highlighter for empty query does not work
+    if (!query) {
+      return result.map((r) => r.obj)
+    }
+
     return result.map((r) => {
       const highlight = fuzzysort.highlight(r, '<b>', '</b>')
+      const parts = highlight ? highlight.split(' / ') : null
+      
       return {
         ...r.obj,
-        title: highlight?.split(' / ').pop() || r.obj.title,
-        folder: highlight?.split(' / ').slice(0, -1).join(' / ') || r.obj.folder,
+        title: parts?.pop() || r.obj.title,
+        folder: parts?.join(' / ') || r.obj.folder,
       } as Bookmark
     })
   }
