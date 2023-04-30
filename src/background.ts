@@ -36,7 +36,7 @@ chrome.commands.onCommand.addListener((command, tab) => {
   switch (command) {
     case "open-grapple-overlay":
       // Send the message to the content script in the tab where the user pressed the command.
-      ports[tab.id].postMessage(new GrappleEvent(GrappleEventTypes.ToggleOverlay, {}));
+      ports[tab.id]?.postMessage(new GrappleEvent(GrappleEventTypes.ToggleOverlay, {}));
       break;
     default:
       break;
