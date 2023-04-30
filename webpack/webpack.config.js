@@ -11,7 +11,7 @@ module.exports = {
       filename: "[name].js",
    },
    resolve: {
-      extensions: [".ts", ".js"],
+      extensions: [".ts", ".js", '.scss'],
    },
    module: {
       rules: [
@@ -20,11 +20,19 @@ module.exports = {
             loader: "ts-loader",
             exclude: /node_modules/,
          },
+         {
+            test: /\.s[ac]ss$/i,
+            use: [
+               "style-loader",
+               "css-loader",
+               "sass-loader",
+            ],
+         }
       ],
    },
    plugins: [
       new CopyPlugin({
-         patterns: [{from: ".", to: ".", context: "public"}]
+         patterns: [{ from: ".", to: ".", context: "public" }]
       }),
    ],
 };

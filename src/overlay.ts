@@ -1,11 +1,6 @@
 import GrappleEvent, { GrappleEventTypes } from "./event";
 import { Bookmark } from "./grapple";
-
-// inject styles from overlay.css
-const style = document.createElement('link');
-style.rel = 'stylesheet';
-style.href = chrome.runtime.getURL('overlay.css');
-document.head.appendChild(style);
+import "./scss/overlay.scss";
 
 const backgroundPort = chrome.runtime.connect({ name: 'grapple-port' });
 var results: Bookmark[] = [];
