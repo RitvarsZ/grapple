@@ -4,6 +4,7 @@ import "./scss/overlay.scss";
 
 const backgroundPort = chrome.runtime.connect({ name: 'grapple-port' });
 var results: Bookmark[] = [];
+var selectedResult: number = -1;
 
 backgroundPort.onMessage.addListener((m: GrappleEvent) => {
   switch (m.type) {
@@ -37,7 +38,7 @@ const toggleOverlay = () => {
 
 const renderBookmarks = () => {
   searchResults.innerHTML = '';
-  console.log(results)
+
   results.forEach((result) => {
     const bookmarkElement = document.createElement('div');
     bookmarkElement.classList.add('grapple-result');
@@ -56,7 +57,36 @@ const renderBookmarks = () => {
       backgroundPort.postMessage(new GrappleEvent(GrappleEventTypes.Navigate, result));
       toggleOverlay();
     });
+    bookmarkElement.addEventListener('mousemove', () => {
+      selectResult(results.indexOf(result));
+    });
   });
+
+  if (results[0]) {
+    selectResult(0)
+  } else {
+    selectedResult = -1;
+  }
+}
+
+const selectResult = (index: number) => {
+  const bookmarkElements = searchResults.querySelectorAll('.grapple-result');
+  if (bookmarkElements.length === 0) {
+    selectedResult = -1;
+    return;
+  };
+
+  bookmarkElements[selectedResult]?.classList.remove('selected');
+
+  //wrap around
+  if (index < 0) {
+    index = bookmarkElements.length - 1;
+  } else if (index >= bookmarkElements.length) {
+    index = 0;
+  }
+
+  bookmarkElements[index].classList.add('selected');
+  selectedResult = index;
 }
 
 const template = `
@@ -86,11 +116,17 @@ document.addEventListener('keydown', (event) => {
       searchBox.value = '';
       break;
     case 'Enter':
-      if (results[0]) {
-        backgroundPort.postMessage(new GrappleEvent(GrappleEventTypes.Navigate, results[0]));
+      if (results[selectedResult]) {
+        backgroundPort.postMessage(new GrappleEvent(GrappleEventTypes.Navigate, results[selectedResult]));
       }
       toggleOverlay();
       break;
+      case 'ArrowUp':
+        selectResult(selectedResult - 1);
+        break;
+      case 'ArrowDown':
+        selectResult(selectedResult + 1);
+        break;
     default:
       break;
   }

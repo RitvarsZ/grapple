@@ -22,7 +22,7 @@ export default class Grapple {
     const result = fuzzysort.go(query, this.bookmarks, {
       key: ['fullTitle'],
       all: true,
-      limit: 25,
+      limit: 15,
     })
 
     // Workaround with fuzzysort using { all: true } - highlighter for empty query does not work
