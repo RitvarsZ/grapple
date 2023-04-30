@@ -11,7 +11,5 @@ export default class GrappleEvent {
   constructor(type: GrappleEventTypes, payload: any) {
     this.type = type;
     this.payload = payload;
-
-    console.log('GrappleEvent', this)
   }
 }
