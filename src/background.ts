@@ -27,11 +27,11 @@ chrome.runtime.onConnect.addListener((port) => {
   })
 });
 
-chrome.commands.onCommand.addListener((command: string, _tab: chrome.tabs.Tab) => {
+chrome.commands.onCommand.addListener((command: string, tab: chrome.tabs.Tab) => {
   switch (command) {
     case "open-grapple-overlay":
       // Open grapple index.html in a new tab
-      chrome.tabs.create({ url: chrome.runtime.getURL("index.html"), active: true });
+      chrome.tabs.create({ url: chrome.runtime.getURL("index.html"), active: true, index: tab.index + 1 });
       break;
     default:
       break;
