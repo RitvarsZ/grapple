@@ -8,9 +8,6 @@ var selectedResult: number = -1;
 
 backgroundPort.onMessage.addListener((m: GrappleEvent) => {
   switch (m.type) {
-    case GrappleEventTypes.ToggleOverlay:
-      toggleOverlay();
-      break;
     case GrappleEventTypes.ShowResults:
       results = m.payload;
       renderBookmarks();
@@ -20,43 +17,25 @@ backgroundPort.onMessage.addListener((m: GrappleEvent) => {
   }
 });
 
-const toggleOverlay = () => {
-  const overlay = document.querySelector('[grapple-container]')
-
-  if (!(overlay instanceof HTMLElement)) return
-
-  if(overlay.dataset.grappleVisible === 'true') {
-    overlay.dataset.grappleVisible = 'false';
-
-    return
-  }
-
-  overlay.dataset.grappleVisible = 'true';
-  backgroundPort.postMessage(new GrappleEvent(GrappleEventTypes.Search, ''));
-  searchBox.focus();
-}
-
 const renderBookmarks = () => {
   searchResults.innerHTML = '';
 
   results.forEach((result) => {
-    const bookmarkElement = document.createElement('div');
+    const bookmarkElement = document.createElement('a');
+    bookmarkElement.href = result.url;
     bookmarkElement.classList.add('grapple-result');
     const favicon = new URL(chrome.runtime.getURL("/_favicon/"));
     favicon.searchParams.set("pageUrl", result.url);
     favicon.searchParams.set("size", "32");
     bookmarkElement.innerHTML = `
-      <img src="${favicon.toString()}" alt="" />
+      <img src="${favicon.toString()}" alt="icon" />
       <div>
         <div class="title">${result.title}</div>
         <div class="folder">${result.folder}</div>
       </div>
     `;
     searchResults.appendChild(bookmarkElement);
-    bookmarkElement.addEventListener('click', () => {
-      backgroundPort.postMessage(new GrappleEvent(GrappleEventTypes.Navigate, result));
-      toggleOverlay();
-    });
+
     bookmarkElement.addEventListener('mousemove', () => {
       selectResult(results.indexOf(result));
     });
@@ -70,13 +49,11 @@ const renderBookmarks = () => {
 }
 
 const selectResult = (index: number) => {
-  const bookmarkElements = searchResults.querySelectorAll('.grapple-result');
+  const bookmarkElements = searchResults.querySelectorAll('.grapple-result') as NodeListOf<HTMLAnchorElement>;
   if (bookmarkElements.length === 0) {
     selectedResult = -1;
     return;
   };
-
-  bookmarkElements[selectedResult]?.classList.remove('selected');
 
   //wrap around
   if (index < 0) {
@@ -85,49 +62,32 @@ const selectResult = (index: number) => {
     index = 0;
   }
 
-  bookmarkElements[index].classList.add('selected');
+  bookmarkElements[index].focus({ preventScroll: true });
+  bookmarkElements[index].scrollIntoView({ behavior: 'smooth', block: 'center' })
   selectedResult = index;
 }
 
-const template = `
-  <div class="grapple-overlay">
-    <div class="grapple-search-box">
-      <input type="text" name="grapple-search" id="grapple-input" title="search" />
-    </div>
-
-    <div class="grapple-search-results"/>
-  </div>`;
-
-
-var overlay = document.createElement('div');
-overlay.attributes.setNamedItem(document.createAttribute('grapple-container'));
-overlay.classList.add('grapple-container');
-overlay.innerHTML = template;
-var searchBox = overlay.querySelector('#grapple-input') as HTMLInputElement;
-var searchResults = overlay.querySelector('.grapple-search-results') as HTMLDivElement;
+var searchBox = document.querySelector('#grapple-input') as HTMLInputElement;
+var searchResults = document.querySelector('.grapple-search-results') as HTMLDivElement;
 
 document.addEventListener('keydown', (event) => {
-  const overlay = document.querySelector('[grapple-container]') as HTMLElement;
-  if (overlay.dataset.grappleVisible === undefined || overlay.dataset.grappleVisible === 'false') return;
-
   switch (event.key) {
     case 'Escape':
-      toggleOverlay();
-      searchBox.value = '';
+      backgroundPort.disconnect();
+      window.close();
       break;
     case 'Enter':
-      if (results[selectedResult]) {
-        backgroundPort.postMessage(new GrappleEvent(GrappleEventTypes.Navigate, results[selectedResult]));
-      }
-      toggleOverlay();
       break;
-      case 'ArrowUp':
-        selectResult(selectedResult - 1);
-        break;
-      case 'ArrowDown':
-        selectResult(selectedResult + 1);
-        break;
+    case 'ArrowUp':
+      selectResult(selectedResult - 1);
+      event.preventDefault();
+      break;
+    case 'ArrowDown':
+      selectResult(selectedResult + 1);
+      event.preventDefault();
+      break;
     default:
+      searchBox.focus();
       break;
   }
 });
@@ -137,4 +97,4 @@ searchBox.addEventListener('input', (event) => {
   backgroundPort.postMessage(new GrappleEvent(GrappleEventTypes.Search, event.target.value));
 });
 
-document.body.appendChild(overlay);
+backgroundPort.postMessage(new GrappleEvent(GrappleEventTypes.Search, ''));

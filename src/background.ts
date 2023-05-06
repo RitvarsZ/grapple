@@ -2,7 +2,7 @@ import GrappleEvent, { GrappleEventTypes } from "./event";
 import Grapple from "./grapple";
 
 const grapple = new Grapple();
-// each tab has its own port
+// each grapple tab has its own port
 let ports: { [tabId: number]: chrome.runtime.Port } = {};
 
 chrome.runtime.onConnect.addListener((port) => {
@@ -14,9 +14,6 @@ chrome.runtime.onConnect.addListener((port) => {
     switch (m.type) {
       case GrappleEventTypes.Search:
         port?.postMessage(new GrappleEvent(GrappleEventTypes.ShowResults, grapple.search(m.payload)));
-        break;
-      case GrappleEventTypes.Navigate:
-        chrome.tabs.create({ url: m.payload.url, active: true });
         break;
       default:
         break;
@@ -30,13 +27,11 @@ chrome.runtime.onConnect.addListener((port) => {
   })
 });
 
-chrome.commands.onCommand.addListener((command, tab) => {
-  if (!tab.id) return;
-
+chrome.commands.onCommand.addListener((command: string, _tab: chrome.tabs.Tab) => {
   switch (command) {
     case "open-grapple-overlay":
-      // Send the message to the content script in the tab where the user pressed the command.
-      ports[tab.id]?.postMessage(new GrappleEvent(GrappleEventTypes.ToggleOverlay, {}));
+      // Open grapple index.html in a new tab
+      chrome.tabs.create({ url: chrome.runtime.getURL("index.html"), active: true });
       break;
     default:
       break;

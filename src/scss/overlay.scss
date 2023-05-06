@@ -1,103 +1,93 @@
-[grapple-container] {
-  * {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: 'Lato', sans-serif;
+}
 
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  align-content: center;
-  justify-content: center;
+body {
   background: rgba(0, 0, 0, 0.75);
-  z-index: 9999;
-  display: none;
+}
 
-  &[data-grapple-visible="true"] {
-    display: flex;
-  }
+.grapple-overlay {
+  color: white;
+  width: 80%;
+  min-height: 100vh;
+  margin: auto;
+}
 
-  .grapple-overlay {
-    width: 80vw;
-    color: white;
-  }
+.grapple-search-box {
+  width: 100%;
+  color: white;
+  border-bottom: 2px solid white;
+  margin-bottom: 1em;
+}
 
-  .grapple-search-box {
-    color: white;
-    border-bottom: 2px solid white;
-    margin-bottom: 1em;
-  }
+input#grapple-input {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  padding: 0.5em;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+}
 
-  input#grapple-input {
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.5em;
-    padding: 0.5em;
+.grapple-search-results {
+  padding-bottom: 10em;
+
+  &::before {
+    content: '';
     width: 100%;
-    outline: none;
-    box-shadow: none;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: linear-gradient(transparent, 70%, rgba(0, 0, 0, 0.9));
+    pointer-events: none;
+  }
+}
+
+.grapple-result {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1em;
+  align-items: center;
+  border-radius: 5px;
+  padding: 3px 5px;
+  margin-bottom: 2px;
+  text-decoration: none;
+  color: white;
+
+  b {
+    font-weight: 600;
+    color: #00aba4;
   }
 
-  .grapple-search-results {
-    min-height: -webkit-fill-available;
-    min-height: 100%;
-
-    &::before {
-      content: '';
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      left: 0;
-      top: 0;
-      background: linear-gradient(transparent, 70%, rgba(0, 0, 0, 0.9));
-      pointer-events: none;
-    }
-  }
-
-  .grapple-result {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 1em;
-    align-items: center;
-    border-radius: 5px;
-    padding: 3px 5px;
-    margin-bottom: 2px;
-
-    b {
-      font-weight: 600;
-      color: #00aba4;
-    }
-
-    &.selected {
-      background: #c1c1c1;
-      cursor: pointer;
-      color: black;
-
-      .folder {
-        color: black;
-      }
-    }
-
-    & > div {
-      overflow: hidden;
-    }
-
-    .title {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  &:focus {
+    background: #c1c1c1;
+    cursor: pointer;
+    color: black;
+    position: relative;
 
     .folder {
-      font-size: 0.75em;
-      color: rgb(200, 200, 200);
+      color: black;
     }
+  }
+
+  &>div {
+    overflow: hidden;
+  }
+
+  .title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .folder {
+    font-size: 0.75em;
+    color: rgb(200, 200, 200);
   }
 }
